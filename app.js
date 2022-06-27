@@ -4,9 +4,9 @@ const { graphqlHTTP } = require('express-graphql');
 const {GraphQLObjectType,GraphQLInt,GraphQLString,GraphQLBoolean,GraphQLSchema,GraphQLList} = require('graphql');
 
 const seedData=[
-    {id: 1, language:'phython',loved: true },
-    {id: 2, language:'javascript',loved: true },
-    {id: 3, language:'scala',loved: true }
+    {id: 1, subject:'phython',passed: true,year:1995 },
+    {id: 2, subject:'javascript',passed: true,year:2000 },
+    {id: 3, subject:'scala',passed: true,year:1997 }
 ]
 
 //schema -->Basiclly  a modules of data that can be fetched through graphql server.
@@ -14,17 +14,20 @@ const seedData=[
 
 
 const languageType = new GraphQLObjectType({
-name: 'Language',
+name: 'subject',
 description: 'ProgrammingLanguage',
 fields:{
     id:{
         type:GraphQLInt
     },
-    language:{
+    subject:{
         type:GraphQLString
     },
-    loved:{
+    passed:{
         type:GraphQLBoolean
+    },
+    year:{
+        type:GraphQLInt
     }
 }
 
@@ -35,16 +38,16 @@ const rootQuery = new GraphQLObjectType({
     description: 'this is root query',
     fields:{
         
-        languages:{
+        subjects:{
             type:GraphQLList(languageType),
             resolve: () => seedData
         },
-        language:{
+        subject:{
             type:languageType,
             args:{
                 id:{type:GraphQLInt}
             },
-            resolve:(_,{id}) => seedData.find(language => language.id ==id)
+            resolve:(_,{id}) => seedData.find(subject => subject.id ==id)
         }
     }
     
@@ -58,19 +61,19 @@ const rootQuery = new GraphQLObjectType({
         description: 'this is root Mutation',
         fields:{
             
-            languages:{
+            subjects:{
                 type:GraphQLList(languageType),
                 resolve: () => seedData
             },
-            language:{
+            subject:{
                 type:languageType,
                 args:{
                     lang:{type:GraphQLString},
-                    loved:{type:GraphQLBoolean}
+                    passed:{type:GraphQLBoolean}
                 },
-                resolve:(_,{lang,loved}) => {
+                resolve:(_,{lang,passed}) => {
                     const newLanguage ={
-                        id: seedData.length+1,language:lang,loved:loved}
+                        id: seedData.length+1,subject:lang,passed:passed}
                         seedData.push(newLanguage)
                         return newLanguage
                     }
